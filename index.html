@@ -78,6 +78,14 @@
       position:relative;
       z-index:6;
     }
+	/* Ajuste específico para telas pequenas */
+	@media (max-width:600px){
+	  .carousel {
+		width: 90vw;            /* quase toda a tela */
+		aspect-ratio: 3/4;      /* mais vertical, ocupa mais espaço */
+	  }
+	}
+	
     .slides {
       display:flex;
       height:100%;
@@ -148,7 +156,7 @@
     /* --- stickers (+65% do original, opacidade menor) --- */
     .sticker {
       position:absolute;
-      width: 264px;       /* antes 160px → +65% */
+      width: 300px;       /* antes 160px → +65% */
       height: auto;
       opacity: 0.12;      
       z-index:2;
@@ -187,6 +195,64 @@
       .caption{ font-size:1rem; }
       .carta{ font-size:1rem; padding:16px; }
     }
+	
+	.love-question {
+	  text-align: center;
+	  margin: 100px 0;
+	  font-family: "Arial", sans-serif;
+	  color: #d6336c;
+	}
+
+	.love-buttons {
+	  display: flex;
+	  justify-content: center;
+	  gap: 14px;
+	  margin-top: 12px;
+	}
+
+	.love-buttons button {
+	  background: #ff4d6d;
+	  color: white;
+	  border: none;
+	  padding: 10px 18px;
+	  font-size: 16px;
+	  border-radius: 8px;
+	  cursor: pointer;
+	  transition: transform 0.2s, background 0.2s;
+	}
+
+	.love-buttons button:hover {
+	  background: #e0315c;
+	  transform: scale(1.1);
+	}
+
+	#hearts-container {
+	  position: fixed;
+	  top: 0;
+	  left: 0;
+	  width: 100%;
+	  height: 100%;
+	  pointer-events: none;
+	  overflow: hidden;
+	  z-index: 9999;
+	}
+
+	.heart {
+	  position: absolute;
+	  font-size: 24px;
+	  animation: explode 1.5s ease-out forwards;
+	}
+
+	@keyframes explode {
+	  0% {
+		transform: translate(0, 0) scale(1);
+		opacity: 1;
+	  }
+	  100% {
+		transform: var(--x) var(--y) scale(0.8);
+		opacity: 0;
+	  }
+	}
   </style>
 </head>
 <body>
@@ -224,10 +290,21 @@
     <div class="carta">
 	  Meu amorzinho, desde o momento em que te reencontrei minha vida ganhou novas cores.
 	  Eu amo uma mãe de pet, com hiperfoco em lavanda e criação de sabonetes fedidos,
-	  um mulherão da porra que é ADEVOGADA, professora, macumbeira, médica, veterinária, aromaterapeuta, psicóloga e uma BAITA DE UMA COZINHEIRA.
+	  um mulherão da porra que é ADEVOGADA, professora, macumbeira, médica, veterinária, aromaterapeuta, quiroprata, psicóloga e uma BAITA DE UMA COZINHEIRA.
 	  <br>Desenvolvi esta surpresa para te lembrar o quanto você me é especial e o quanto sou grato por ter você ao meu lado (o que eu quero que aconteça pelo resto da minha vida).
       <br>❤️ Com amor, Tiago. ❤️ Love u. 😍
     </div>
+	
+	<div class="love-question">
+	  <h2>Dany, você aceita namorar comigo?</h2>
+	  <div class="love-buttons">
+		<button onclick="explodeHearts()">SIM</button>
+		<button onclick="explodeHearts()">CLARO</button>
+		<button onclick="explodeHearts()">ÓBVIO</button>
+	  </div>
+	</div>
+	<!-- Container dos corações -->
+	<div id="hearts-container"></div>
 
     <div id="audioWrap">
       <audio id="music" controls loop>
@@ -306,6 +383,42 @@
     }
     setInterval(atualizarContador, 1000);
     atualizarContador();
+	
+	function explodeHearts() {
+	  const container = document.getElementById("hearts-container");
+	  const centerX = window.innerWidth / 2;
+	  const centerY = window.innerHeight / 2;
+
+	  for (let i = 0; i < 50; i++) {
+		const heart = document.createElement("div");
+		heart.classList.add("heart");
+		heart.innerText = "❤️";
+
+		// posição inicial no centro
+		heart.style.left = centerX + "px";
+		heart.style.top = centerY + "px";
+
+		// direção aleatória de explosão
+		const angle = Math.random() * 2 * Math.PI;
+		const distance = Math.random() * 250 + 50; // raio da explosão
+		const x = Math.cos(angle) * distance;
+		const y = Math.sin(angle) * distance;
+
+		// passa valores para o CSS
+		heart.style.setProperty("--x", `translateX(${x}px)`);
+		heart.style.setProperty("--y", `translateY(${y}px)`);
+
+		// tamanho aleatório
+		heart.style.fontSize = Math.random() * 30 + 30 + "px";
+
+		container.appendChild(heart);
+
+		// remover coração depois da animação
+		setTimeout(() => {
+		  heart.remove();
+		}, 1500);
+	  }
+	}
   </script>
 </body>
 </html>
